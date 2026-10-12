@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Synapse: coherence controllers from three specs</title>
+<title>Synapse: automated synthesis of cache coherence controllers</title>
 <meta name="description" content="Synapse synthesizes cache coherence controllers from decoupled protocol, topology and policy specs, verifies them, and emits SLICC that runs in gem5. MICRO 2026.">
-<meta property="og:title" content="Synapse: coherence controllers from three specs">
+<meta property="og:title" content="Synapse: automated synthesis of cache coherence controllers">
 <meta property="og:description" content="Decoupling Protocol, Topology, and Policy for Automated Synthesis of Coherence Controllers (MICRO 2026).">
 <meta property="og:image" content="https://synapse-coherence.github.io/assets/img/og.png">
 <meta property="og:url" content="https://synapse-coherence.github.io/">
@@ -29,6 +29,7 @@
     <nav class="site-nav" aria-label="Sections">
       <a href="#how">How it works</a>
       <a href="#try">Try it</a>
+      <a href="#build">Contribute</a>
       <a href="#cite">Cite</a>
       <a href="https://github.com/TUM-DSE/Synapse">GitHub</a>
     </nav>
@@ -41,8 +42,9 @@
   <div class="wrap">
     <div class="hero-top">
       <div>
-        <h1>Cache coherence controllers, synthesized from three specs</h1>
-        <p class="lede">Describe the protocol, the topology and the policy separately. Synapse combines them into complete controllers, checks them for deadlocks and memory-consistency violations, and emits SLICC that runs in gem5.</p>
+        <h1>Synapse</h1>
+        <p class="tagline">Automated synthesis of cache coherence controllers</p>
+        <p class="paper"><cite>Decoupling Protocol, Topology, and Policy for Automated Synthesis of Coherence Controllers.</cite> MICRO 2026, Athens.</p>
         <div class="actions">
           <!-- TODO: put the camera-ready PDF at paper/synapse-micro26.pdf, or point to the ACM DL page -->
           <a class="btn primary" href="paper/synapse-micro26.pdf">Read the paper</a>
@@ -51,37 +53,41 @@
         </div>
       </div>
       <div class="hero-mark" aria-hidden="true">
-        <img class="only-light" src="assets/img/synapse-mark.svg" alt="" width="280" height="280">
-        <img class="only-dark" src="assets/img/synapse-mark-dark.svg" alt="" width="280" height="280">
+        <img class="only-light" src="assets/img/synapse-mark.svg" alt="" width="260" height="260">
+        <img class="only-dark" src="assets/img/synapse-mark-dark.svg" alt="" width="260" height="260">
       </div>
     </div>
 
-    <div class="namebox">
-      <p>Every Synapse controller is named after the specs it was built from. Change one spec and you get a different controller, with nothing rewritten by hand.</p>
-      <div class="cname" aria-live="polite">
-        <span class="seg protocol"><span class="tok">MESI</span><span class="lbl">on-core protocol</span></span>
-        <span class="sep" aria-hidden="true">_</span>
-        <span class="seg protocol"><span class="tok" id="offcore">CXL</span><span class="lbl">off-core protocol</span></span>
-        <span class="sep" aria-hidden="true">_</span>
-        <span class="seg policy"><span class="tok">WB</span><span class="lbl">write policy</span></span>
-        <span class="sep" aria-hidden="true">_</span>
-        <span class="seg policy"><span class="tok">INCL</span><span class="lbl">inclusion policy</span></span>
-        <span class="sep" aria-hidden="true">_</span>
-        <span class="seg topology"><span class="tok">MN</span><span class="lbl">multi-host topology</span></span>
+    <figure class="flow">
+      <div class="specs">
+        <div class="spec protocol"><b>Protocol</b><span>MESI</span></div>
+        <div class="spec topology"><b>Topology</b><span>L1 + L2 + LLC</span></div>
+        <div class="spec policy"><b>Policy</b><span>inclusive, write-back</span></div>
       </div>
-      <div class="knob" role="group" aria-label="Off-core protocol">
-        <span class="knob-label">Off-core protocol</span>
-        <button type="button" data-p="MESI" aria-pressed="false">MESI</button>
-        <button type="button" data-p="MOESI" aria-pressed="false">MOESI</button>
-        <button type="button" data-p="MESIF" aria-pressed="false">MESIF</button>
-        <button type="button" data-p="CXL" aria-pressed="true">CXL</button>
+      <div class="arrow" aria-hidden="true"></div>
+      <div class="engine">
+        <div class="engine-box">
+          <img class="only-light" src="assets/img/synapse-mark-dark.svg" alt="" width="44" height="44">
+          <img class="only-dark" src="assets/img/synapse-mark.svg" alt="" width="44" height="44">
+          Synapse
+        </div>
+        <div class="props"><span class="prop">Automatic</span><span class="prop">Verified</span><span class="prop">Performant</span></div>
       </div>
-      <div class="legend" aria-hidden="true">
-        <span class="l-protocol">Protocol spec</span>
-        <span class="l-topology">Topology spec</span>
-        <span class="l-policy">Policy spec</span>
+      <div class="arrow" aria-hidden="true"></div>
+      <div class="outs">
+        <div class="out done">
+          <img class="logo" src="assets/img/gem5.png" alt="gem5 logo" width="40" height="40">
+          <div><b>Simulated controllers</b><small>SLICC for gem5</small></div>
+          <span class="tag">Available</span>
+        </div>
+        <div class="out next">
+          <img class="logo" src="assets/img/chipyard.png" alt="Chipyard logo" width="40" height="40">
+          <div><b>Hardware controllers</b><small>via Chipyard</small></div>
+          <span class="tag">Next</span>
+        </div>
       </div>
-    </div>
+      <figcaption>Write the three specs once. Synapse composes them into verified controllers; a different design means changing one spec, not rewriting a controller.</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -122,7 +128,7 @@
       <li class="stage">
         <h3>Specs</h3>
         <p>Written in the Synapse DSL.</p>
-        <div class="chips"><span class="chip protocol">protocol</span><span class="chip topology">topology</span><span class="chip policy">policy</span></div>
+        <div class="chips"><span class="chip">protocol</span><span class="chip topology">topology</span><span class="chip policy">policy</span></div>
       </li>
       <li class="stage">
         <h3>Synthesis</h3>
@@ -143,10 +149,9 @@
 <section class="section alt" id="try">
   <div class="wrap">
     <h2>Try it</h2>
-    <p class="intro">The artifact reproduces every experiment in the paper. The quickest path is the prebuilt Docker image; the functional test finishes in under a minute.</p>
-    <div class="try-grid">
-      <div>
-        <div class="codeblock">
+    <p class="intro">The artifact reproduces every experiment in the paper. Start with the prebuilt Docker image; the functional test finishes in under a minute.</p>
+    <div class="quick">
+      <div class="codeblock">
 <pre><code>git clone https://github.com/TUM-DSE/Synapse
 cd Synapse
 docker pull carpeniem/synapse-artifact-s1_2_3:prebuilt
@@ -154,56 +159,93 @@ just shell-s1_2_3-prebuilt
 
 <span class="cmt"># inside the container</span>
 ./S1_2_3_experiments/scripts/run-functional.sh</code></pre>
-          <button class="copy" type="button">Copy</button>
-        </div>
-        <p class="note">Any x86-64 machine with Docker. Plan for about 12 GB of RAM per concurrent simulation. <code>just</code> is optional: every shortcut maps to a script in the repository.</p>
+        <button class="copy" type="button">Copy</button>
       </div>
-      <div class="table-wrap">
-        <table>
-          <caption class="note" style="text-align:left; caption-side: bottom; padding-top: 12px">S4 has its own image: <code>carpeniem/synapse-artifact-s4</code>.</caption>
-          <thead><tr><th scope="col">Scenario</th><th scope="col">Figure</th><th scope="col">Run</th><th scope="col">gem5</th></tr></thead>
-          <tbody>
-            <tr><td>SMP</td><td>8</td><td><code>just fig8</code></td><td>v23</td></tr>
-            <tr><td>NUMA</td><td>9</td><td><code>just fig9</code></td><td>v23</td></tr>
-            <tr><td>Multi-host CXL</td><td>10</td><td><code>just fig10</code></td><td>v23</td></tr>
-            <tr><td>Heterogeneous chiplets</td><td>11</td><td><code>just fig11</code></td><td>v20</td></tr>
-          </tbody>
-        </table>
-      </div>
+      <p class="note">Any x86-64 machine with Docker. Plan for about 12 GB of RAM per concurrent simulation. <code>just</code> is optional: every shortcut maps to a script in the repository.</p>
     </div>
+
+    <h3 style="margin-bottom: 20px">Four scenarios from the paper</h3>
+    <div class="scenarios">
+      <article class="scn">
+        <svg viewBox="0 0 64 48" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="14" y="4" width="36" height="36" rx="4"/><rect x="20" y="10" width="10" height="10" rx="1.5"/><rect x="34" y="10" width="10" height="10" rx="1.5"/><rect x="20" y="24" width="10" height="10" rx="1.5"/><rect x="34" y="24" width="10" height="10" rx="1.5"/></svg>
+        <h3>SMP</h3>
+        <p>Synthesized controllers against gem5's hand-written ones.</p>
+        <dl>
+          <dt>On-core</dt><dd><span class="chip">MESI</span><span class="chip">MOESI</span></dd>
+          <dt>Off-core</dt><dd>single node</dd>
+        </dl>
+        <div class="run"><code>just fig8</code><span>Fig. 8 · gem5 v23</span></div>
+      </article>
+      <article class="scn">
+        <svg viewBox="0 0 64 48" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="6" y="2" width="16" height="16" rx="3"/><rect x="42" y="2" width="16" height="16" rx="3"/><rect x="6" y="28" width="16" height="16" rx="3"/><rect x="42" y="28" width="16" height="16" rx="3"/><path d="M22 10H42M22 36H42M14 18V28M50 18V28"/></svg>
+        <h3>NUMA</h3>
+        <p>Which off-core protocol to use across four sockets.</p>
+        <dl>
+          <dt>On-core</dt><dd><span class="chip">MESI</span></dd>
+          <dt>Off-core</dt><dd><span class="chip">MESI</span><span class="chip">MOESI</span><span class="chip">MESIF incl.</span><span class="chip">MESIF excl.</span></dd>
+        </dl>
+        <div class="run"><code>just fig9</code><span>Fig. 9 · gem5 v23</span></div>
+      </article>
+      <article class="scn">
+        <svg viewBox="0 0 64 48" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="2" width="14" height="14" rx="3"/><rect x="25" y="2" width="14" height="14" rx="3"/><rect x="46" y="2" width="14" height="14" rx="3"/><rect x="6" y="32" width="52" height="12" rx="3"/><path d="M11 16V32M32 16V32M53 16V32"/></svg>
+        <h3>Multi-host CXL</h3>
+        <p>Which protocol the bridge between hosts should speak, on YCSB-C.</p>
+        <dl>
+          <dt>On-core</dt><dd><span class="chip">MESI</span></dd>
+          <dt>Off-core</dt><dd><span class="chip">MESI</span><span class="chip">MOESI</span><span class="chip">MESIF</span><span class="chip">CXL</span></dd>
+        </dl>
+        <div class="run"><code>just fig10</code><span>Fig. 10 · gem5 v23</span></div>
+      </article>
+      <article class="scn">
+        <svg viewBox="0 0 64 48" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="30" height="40" rx="4"/><rect x="42" y="4" width="18" height="16" rx="3"/><rect x="42" y="28" width="18" height="16" rx="3"/><path d="M34 12H42M34 36H42"/></svg>
+        <h3>Heterogeneous chiplets</h3>
+        <p>Write-back against write-through accelerator chiplets.</p>
+        <dl>
+          <dt>On-core</dt><dd><span class="chip">MESI-RC</span></dd>
+          <dt>Off-core</dt><dd><span class="chip">MESI</span><span class="chip">CXL</span></dd>
+          <dt>Policy</dt><dd><span class="chip policy">WB</span><span class="chip policy">WT</span></dd>
+        </dl>
+        <div class="run"><code>just fig11</code><span>Fig. 11 · gem5 v20</span></div>
+      </article>
+    </div>
+    <p class="note" style="margin-top: 16px">The chiplet scenario runs on its own image, <code>carpeniem/synapse-artifact-s4</code>.</p>
   </div>
 </section>
 
-<section class="section" id="generate">
+<section class="section" id="build">
   <div class="wrap">
-    <h2>Generate your own controllers</h2>
-    <div class="later">
-      <!-- TODO: replace with the spec example and the generate command once the generator is in TUM-DSE/Synapse -->
-      <p>The generator that turns your own specs into controllers is being added to the repository. This section will show a complete example: three specs in, controllers out. <a href="https://github.com/TUM-DSE/Synapse">Watch the repository</a> to know when it lands.</p>
+    <h2>Build on Synapse</h2>
+    <p class="intro">Synapse is meant to grow with the people who use it. Every protocol, topology, policy or back end added once composes with everything already there.</p>
+    <div class="ways">
+      <div class="way use">
+        <h3>Use it</h3>
+        <p>Reproduce the paper with the artifact, then generate controllers for your own hierarchy. The generator is being added to the repository.</p>
+        <ul>
+          <li><a href="#try">Run the artifact</a></li>
+          <!-- TODO: point to the generator docs once it is in TUM-DSE/Synapse -->
+          <li><a href="https://github.com/TUM-DSE/Synapse">Watch for the generator release</a></li>
+        </ul>
+      </div>
+      <div class="way extend">
+        <h3>Extend it</h3>
+        <p>Add a protocol, a topology, a policy or a new back end. Hardware controllers through Chipyard are the next back end.</p>
+        <ul>
+          <li><a href="https://github.com/TUM-DSE/Synapse/pulls">Open a pull request</a></li>
+        </ul>
+      </div>
+      <div class="way share">
+        <h3>Share it</h3>
+        <p>Report a bug, ask for a protocol you need, or tell us what you built with Synapse.</p>
+        <ul>
+          <li><a href="https://github.com/TUM-DSE/Synapse/issues">Open an issue</a></li>
+          <li><a href="mailto:nicolo.carpentieri@tum.de">Write to us</a></li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="section alt" id="roadmap">
-  <div class="wrap">
-    <h2>Where Synapse goes next</h2>
-    <p class="intro">The specs stay the same; what changes is the back end that consumes them.</p>
-    <div class="roadmap">
-      <div class="road done">
-        <span class="state">Available</span>
-        <h3>Simulated controllers in gem5</h3>
-        <p>SLICC controllers and simulation setup, verified before they run.</p>
-      </div>
-      <div class="road next">
-        <span class="state">Next</span>
-        <h3>Hardware controllers via Chipyard</h3>
-        <p>The same three specs, compiled to real hardware instead of a simulator model.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="cite">
+<section class="section alt" id="cite">
   <div class="wrap">
     <h2>Cite Synapse</h2>
     <p class="intro">Nicolo Carpentieri, Anatole Lefort, David Schall, Julian Pritzi, Pramod Bhatotia. <em>Decoupling Protocol, Topology, and Policy for Automated Synthesis of Coherence Controllers.</em> MICRO 2026, Athens, Greece.</p>
@@ -224,7 +266,7 @@ just shell-s1_2_3-prebuilt
   </div>
 </section>
 
-<section class="section alt" id="people">
+<section class="section" id="people">
   <div class="wrap">
     <h2>People</h2>
     <ul class="people">
@@ -242,30 +284,23 @@ just shell-s1_2_3-prebuilt
 
 <footer class="site-foot">
   <div class="wrap">
-    <img class="only-light" src="assets/img/synapse-lockup.svg" alt="Synapse" width="160" height="40">
-    <img class="only-dark" src="assets/img/synapse-lockup-dark.svg" alt="Synapse" width="160" height="40">
+    <img class="only-light" src="assets/img/synapse-lockup.svg" alt="Synapse" width="160" height="36">
+    <img class="only-dark" src="assets/img/synapse-lockup-dark.svg" alt="Synapse" width="160" height="36">
     <p style="margin:0">Open source under the MIT license. Code at <a href="https://github.com/TUM-DSE/Synapse">TUM-DSE/Synapse</a>.</p>
   </div>
 </footer>
 
 <script>
-(function () {
-  var tok = document.getElementById('offcore');
-  var buttons = document.querySelectorAll('.knob button');
-  buttons.forEach(function (b) {
-    b.addEventListener('click', function () {
-      buttons.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
-      tok.textContent = b.dataset.p;
-    });
+document.querySelectorAll('.codeblock .copy').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var text = btn.parentNode.querySelector('pre').innerText;
+    if (!navigator.clipboard) return;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = 'Copied';
+      setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
+    }, function () {});
   });
-  document.querySelectorAll('.codeblock .copy').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var text = btn.parentNode.querySelector('pre').innerText;
-      var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1600); };
-      if (navigator.clipboard) { navigator.clipboard.writeText(text).then(done, function () {}); }
-    });
-  });
-})();
+});
 </script>
 </body>
 </html>
