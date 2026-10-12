@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Synapse: coherence controllers from three specs</title>
+<meta name="description" content="Synapse synthesizes cache coherence controllers from decoupled protocol, topology and policy specs, verifies them, and emits SLICC that runs in gem5. MICRO 2026.">
+<meta property="og:title" content="Synapse: coherence controllers from three specs">
+<meta property="og:description" content="Decoupling Protocol, Topology, and Policy for Automated Synthesis of Coherence Controllers (MICRO 2026).">
+<meta property="og:image" content="https://synapse-coherence.github.io/assets/img/og.png">
+<meta property="og:url" content="https://synapse-coherence.github.io/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#13213C">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/ibm-plex-sans-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="./" aria-label="Synapse home">
+      <img class="only-light" src="assets/img/synapse-mark.svg" alt="" width="36" height="36">
+      <img class="only-dark" src="assets/img/synapse-mark-dark.svg" alt="" width="36" height="36">
+      Synapse
+    </a>
+    <nav class="site-nav" aria-label="Sections">
+      <a href="#how">How it works</a>
+      <a href="#try">Try it</a>
+      <a href="#cite">Cite</a>
+      <a href="https://github.com/TUM-DSE/Synapse">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <div>
+        <h1>Cache coherence controllers, synthesized from three specs</h1>
+        <p class="lede">Describe the protocol, the topology and the policy separately. Synapse combines them into complete controllers, checks them for deadlocks and memory-consistency violations, and emits SLICC that runs in gem5.</p>
+        <div class="actions">
+          <!-- TODO: put the camera-ready PDF at paper/synapse-micro26.pdf, or point to the ACM DL page -->
+          <a class="btn primary" href="paper/synapse-micro26.pdf">Read the paper</a>
+          <a class="btn" href="https://github.com/TUM-DSE/Synapse">Get the code</a>
+          <a class="btn" href="#try">Run the artifact</a>
+        </div>
+      </div>
+      <div class="hero-mark" aria-hidden="true">
+        <img class="only-light" src="assets/img/synapse-mark.svg" alt="" width="280" height="280">
+        <img class="only-dark" src="assets/img/synapse-mark-dark.svg" alt="" width="280" height="280">
+      </div>
+    </div>
+
+    <div class="namebox">
+      <p>Every Synapse controller is named after the specs it was built from. Change one spec and you get a different controller, with nothing rewritten by hand.</p>
+      <div class="cname" aria-live="polite">
+        <span class="seg protocol"><span class="tok">MESI</span><span class="lbl">on-core protocol</span></span>
+        <span class="sep" aria-hidden="true">_</span>
+        <span class="seg protocol"><span class="tok" id="offcore">CXL</span><span class="lbl">off-core protocol</span></span>
+        <span class="sep" aria-hidden="true">_</span>
+        <span class="seg policy"><span class="tok">WB</span><span class="lbl">write policy</span></span>
+        <span class="sep" aria-hidden="true">_</span>
+        <span class="seg policy"><span class="tok">INCL</span><span class="lbl">inclusion policy</span></span>
+        <span class="sep" aria-hidden="true">_</span>
+        <span class="seg topology"><span class="tok">MN</span><span class="lbl">multi-host topology</span></span>
+      </div>
+      <div class="knob" role="group" aria-label="Off-core protocol">
+        <span class="knob-label">Off-core protocol</span>
+        <button type="button" data-p="MESI" aria-pressed="false">MESI</button>
+        <button type="button" data-p="MOESI" aria-pressed="false">MOESI</button>
+        <button type="button" data-p="MESIF" aria-pressed="false">MESIF</button>
+        <button type="button" data-p="CXL" aria-pressed="true">CXL</button>
+      </div>
+      <div class="legend" aria-hidden="true">
+        <span class="l-protocol">Protocol spec</span>
+        <span class="l-topology">Topology spec</span>
+        <span class="l-policy">Policy spec</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="wrap"><div class="prose">
+    <h2>Why</h2>
+    <p>Every new architecture needs new coherence controllers: a second socket, an accelerator, a CXL memory pool. Today each one is written by hand, as a state machine full of transient states, and then debugged and verified on its own. The protocol, the place in the hierarchy and the cache policy are tangled together in the same code, so changing one of them means starting over.</p>
+    <p>Synapse keeps the three apart. You write them once, and recombine them for every new design.</p>
+  </div></div>
+</section>
+
+<section class="section" id="how">
+  <div class="wrap">
+    <h2>How it works</h2>
+    <p class="intro">Every coherence controller, whatever its protocol and wherever it sits, reduces to three state machines. The protocol spec provides the client and the manager, the policy spec provides the policy, and the topology spec only says where each controller sits: who is its parent, who are its children.</p>
+
+    <div class="fsms">
+      <div class="fsm client">
+        <h3>Client</h3>
+        <p>Asks its parent for data and permissions, like a cache.</p>
+      </div>
+      <div class="fsm manager">
+        <h3>Manager</h3>
+        <p>Tracks what its children hold, like a directory.</p>
+      </div>
+      <div class="fsm policy">
+        <h3>Policy</h3>
+        <p>Decides when to allocate, update or replace a block.</p>
+      </div>
+    </div>
+
+    <div class="prose" style="margin-bottom: 48px">
+      <p>The three machines speak different languages, and at a bridge the child may speak MESI while the parent speaks CXL. Synapse labels every state and request, in any protocol, with one tuple, <span class="tuple">⟨Permission, Data, Coherence⟩</span>, then fuses the transitions whose labels match. The result is one concrete controller, transient states included.</p>
+    </div>
+
+    <h3 style="margin-bottom: 20px">The compiler</h3>
+    <ol class="pipeline">
+      <li class="stage">
+        <h3>Specs</h3>
+        <p>Written in the Synapse DSL.</p>
+        <div class="chips"><span class="chip protocol">protocol</span><span class="chip topology">topology</span><span class="chip policy">policy</span></div>
+      </li>
+      <li class="stage">
+        <h3>Synthesis</h3>
+        <p>Builds every controller in the topology, then checks deadlock freedom with Murφ and memory consistency with litmus tests.</p>
+      </li>
+      <li class="stage">
+        <h3>Code generation</h3>
+        <p>Emits SLICC controllers and the gem5 simulation setup.</p>
+      </li>
+      <li class="stage">
+        <h3>gem5</h3>
+        <p>Run and measure the design like any hand-written protocol.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="section alt" id="try">
+  <div class="wrap">
+    <h2>Try it</h2>
+    <p class="intro">The artifact reproduces every experiment in the paper. The quickest path is the prebuilt Docker image; the functional test finishes in under a minute.</p>
+    <div class="try-grid">
+      <div>
+        <div class="codeblock">
+<pre><code>git clone https://github.com/TUM-DSE/Synapse
+cd Synapse
+docker pull carpeniem/synapse-artifact-s1_2_3:prebuilt
+just shell-s1_2_3-prebuilt
+
+<span class="cmt"># inside the container</span>
+./S1_2_3_experiments/scripts/run-functional.sh</code></pre>
+          <button class="copy" type="button">Copy</button>
+        </div>
+        <p class="note">Any x86-64 machine with Docker. Plan for about 12 GB of RAM per concurrent simulation. <code>just</code> is optional: every shortcut maps to a script in the repository.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <caption class="note" style="text-align:left; caption-side: bottom; padding-top: 12px">S4 has its own image: <code>carpeniem/synapse-artifact-s4</code>.</caption>
+          <thead><tr><th scope="col">Scenario</th><th scope="col">Figure</th><th scope="col">Run</th><th scope="col">gem5</th></tr></thead>
+          <tbody>
+            <tr><td>SMP</td><td>8</td><td><code>just fig8</code></td><td>v23</td></tr>
+            <tr><td>NUMA</td><td>9</td><td><code>just fig9</code></td><td>v23</td></tr>
+            <tr><td>Multi-host CXL</td><td>10</td><td><code>just fig10</code></td><td>v23</td></tr>
+            <tr><td>Heterogeneous chiplets</td><td>11</td><td><code>just fig11</code></td><td>v20</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="generate">
+  <div class="wrap">
+    <h2>Generate your own controllers</h2>
+    <div class="later">
+      <!-- TODO: replace with the spec example and the generate command once the generator is in TUM-DSE/Synapse -->
+      <p>The generator that turns your own specs into controllers is being added to the repository. This section will show a complete example: three specs in, controllers out. <a href="https://github.com/TUM-DSE/Synapse">Watch the repository</a> to know when it lands.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="roadmap">
+  <div class="wrap">
+    <h2>Where Synapse goes next</h2>
+    <p class="intro">The specs stay the same; what changes is the back end that consumes them.</p>
+    <div class="roadmap">
+      <div class="road done">
+        <span class="state">Available</span>
+        <h3>Simulated controllers in gem5</h3>
+        <p>SLICC controllers and simulation setup, verified before they run.</p>
+      </div>
+      <div class="road next">
+        <span class="state">Next</span>
+        <h3>Hardware controllers via Chipyard</h3>
+        <p>The same three specs, compiled to real hardware instead of a simulator model.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="cite">
+  <div class="wrap">
+    <h2>Cite Synapse</h2>
+    <p class="intro">Nicolo Carpentieri, Anatole Lefort, David Schall, Julian Pritzi, Pramod Bhatotia. <em>Decoupling Protocol, Topology, and Policy for Automated Synthesis of Coherence Controllers.</em> MICRO 2026, Athens, Greece.</p>
+    <div class="codeblock">
+<!-- TODO: replace with the ACM-provided BibTeX (DOI, pages) once available -->
+<pre><code>@inproceedings{carpentieri2026synapse,
+  title     = {Decoupling Protocol, Topology, and Policy for
+               Automated Synthesis of Coherence Controllers},
+  author    = {Carpentieri, Nicolo and Lefort, Anatole and Schall, David
+               and Pritzi, Julian and Bhatotia, Pramod},
+  booktitle = {Proceedings of the 59th IEEE/ACM International
+               Symposium on Microarchitecture (MICRO)},
+  year      = {2026},
+  address   = {Athens, Greece}
+}</code></pre>
+      <button class="copy" type="button">Copy</button>
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="people">
+  <div class="wrap">
+    <h2>People</h2>
+    <ul class="people">
+      <li>Nicolo Carpentieri</li>
+      <li>Anatole Lefort</li>
+      <li>David Schall</li>
+      <li>Julian Pritzi</li>
+      <li>Pramod Bhatotia</li>
+    </ul>
+    <p><a href="https://dse.in.tum.de/">Systems Research Group</a>, Technical University of Munich</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <img class="only-light" src="assets/img/synapse-lockup.svg" alt="Synapse" width="160" height="40">
+    <img class="only-dark" src="assets/img/synapse-lockup-dark.svg" alt="Synapse" width="160" height="40">
+    <p style="margin:0">Open source under the MIT license. Code at <a href="https://github.com/TUM-DSE/Synapse">TUM-DSE/Synapse</a>.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var tok = document.getElementById('offcore');
+  var buttons = document.querySelectorAll('.knob button');
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () {
+      buttons.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+      tok.textContent = b.dataset.p;
+    });
+  });
+  document.querySelectorAll('.codeblock .copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var text = btn.parentNode.querySelector('pre').innerText;
+      var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1600); };
+      if (navigator.clipboard) { navigator.clipboard.writeText(text).then(done, function () {}); }
+    });
+  });
+})();
+</script>
+</body>
+</html>
