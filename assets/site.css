@@ -28,26 +28,59 @@
   --wrap: 1120px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0E1A2E;
-    --bg-alt: #132440;
-    --ink: #E8EDF5;
-    --ink-2: #C3CCDB;
-    --muted: #A3AFC2;
-    --line: #2A3D5F;
-    --protocol: #86AEF2;
-    --topology: #BBAEDD;
-    --policy: #DDABC4;
-    --protocol-bg: #1B3157;
-    --topology-bg: #2A2650;
-    --policy-bg: #3A2440;
-    --ok: #9BCF8A;
-    --ok-bg: #1E3A22;
-    --code-bg: #08111F;
-    --code-ink: #E8EDF5;
-  }
+/* light is the default; the header toggle sets data-theme="dark" on <html> */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0E1A2E;
+  --bg-alt: #132440;
+  --ink: #E8EDF5;
+  --ink-2: #C3CCDB;
+  --muted: #A3AFC2;
+  --line: #2A3D5F;
+  --protocol: #86AEF2;
+  --topology: #BBAEDD;
+  --policy: #DDABC4;
+  --protocol-bg: #1B3157;
+  --topology-bg: #2A2650;
+  --policy-bg: #3A2440;
+  --ok: #9BCF8A;
+  --ok-bg: #1E3A22;
+  --code-bg: #08111F;
+  --code-ink: #E8EDF5;
 }
+
+/* logo colours as variables so the inline hero mark follows the theme */
+:root { --m-ink: #13213C; --m-in: #1155CC; --m-topo: #674EA7; --m-out: #A64D79; }
+:root[data-theme="dark"] { --m-ink: #E6ECF5; --m-in: #6D9EEB; --m-topo: #B4A7D6; --m-out: #D5A6BD; }
+body, .site-head, .section, .site-foot, .spec, .out, .scn, .stage, .btn { transition: background-color .25s ease, border-color .25s ease, color .25s ease; }
+
+/* theme toggle */
+.head-right { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.theme-toggle { width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; }
+.theme-toggle:hover { background: var(--bg-alt); }
+.theme-toggle svg { width: 20px; height: 20px; }
+.theme-toggle .moon { display: block; }
+.theme-toggle .sun { display: none; }
+[data-theme="dark"] .theme-toggle .moon { display: none; }
+[data-theme="dark"] .theme-toggle .sun { display: block; }
+
+/* the one moving thing: messages crossing the synaptic cleft, and the same signal along the hero arrows */
+.hero-mark svg { width: 100%; height: auto; display: block; }
+@media (prefers-reduced-motion: no-preference) {
+  .hero-mark .msg { animation: fire 2.4s ease-in-out infinite; }
+  .hero-mark .m2 { animation-delay: .25s; }
+  .hero-mark .m3 { animation-delay: .5s; }
+  .hero-mark .bulb { animation: charge 2.4s ease-in-out infinite; transform-origin: 44px 50px; }
+  .arrow .pulse { position: absolute; top: -4px; left: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--protocol); animation: travel 2.4s ease-in-out infinite; }
+  .arrow + .engine + .arrow .pulse { background: var(--ok); animation-delay: 1.2s; }
+}
+@keyframes fire { 0%, 30% { opacity: .15; transform: translateX(-3px); } 55% { opacity: 1; transform: translateX(0); } 85%, 100% { opacity: .15; transform: translateX(2px); } }
+@keyframes charge { 0%, 100% { transform: scale(1); } 25% { transform: scale(1.12); } 45% { transform: scale(1); } }
+@keyframes travel { 0% { left: 0; opacity: 0; } 15% { opacity: 1; } 70% { opacity: 1; } 90%, 100% { left: calc(100% - 10px); opacity: 0; } }
+
+/* author links */
+.people a { color: var(--ink); text-decoration: none; border-bottom: 2px solid var(--line); padding-bottom: 2px; }
+.people a:hover { border-bottom-color: var(--protocol); color: var(--protocol); }
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -60,10 +93,8 @@ img { display: block; max-width: 100%; height: auto; }
 
 .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 24px; }
 .only-dark { display: none; }
-@media (prefers-color-scheme: dark) {
-  .only-light { display: none; }
-  .only-dark { display: block; }
-}
+[data-theme="dark"] .only-light { display: none; }
+[data-theme="dark"] .only-dark { display: block; }
 
 /* header */
 .site-head { border-bottom: 1px solid var(--line); }
@@ -188,6 +219,7 @@ img { display: block; max-width: 100%; height: auto; }
 }
 @media (max-width: 900px) {
   .hero-mark { display: none; }
+  .arrow .pulse { display: none; }
   .flow { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .arrow { width: 2px; height: 36px; margin: 8px auto; }
   .arrow::after { right: -6px; top: auto; bottom: -2px; border: 7px solid transparent; border-top: 10px solid var(--ink); border-bottom: 0; }
@@ -198,6 +230,10 @@ img { display: block; max-width: 100%; height: auto; }
   .fsms, .ways { grid-template-columns: minmax(0, 1fr); gap: 28px; }
 }
 @media (max-width: 600px) {
+  .head-right { display: contents; }
+  .site-head .wrap { padding-top: 12px; padding-bottom: 4px; row-gap: 4px; }
+  .site-nav { order: 2; width: 100%; gap: 0 16px; }
+  .site-nav a { font-size: 15px; padding: 8px 0; }
   body { font-size: 17px; }
   .hero { padding: 44px 0 56px; }
   .section { padding: 56px 0; }
