@@ -51,7 +51,6 @@
       <div>
         <h1>Synapse</h1>
         <p class="tagline">Decoupling Protocol, Topology, and Policy for Automated Synthesis of Coherence Controllers</p>
-        <p class="paper">MICRO 2026, Athens</p>
         <div class="actions">
           <!-- TODO: put the camera-ready PDF at paper/synapse-micro26.pdf, or point to the ACM DL page -->
           <a class="btn primary" href="paper/synapse-micro26.pdf">Read the paper</a>
@@ -65,11 +64,11 @@
           <path d="M35 9V20M50 9V20M65 9V20M35 80V91M50 80V91M65 80V91M9 35H20M9 65H20M80 35H91M80 65H91" fill="none" stroke="var(--m-ink)" stroke-width="5" stroke-linecap="round"/>
           <path d="M9 50H36" fill="none" stroke="var(--m-in)" stroke-width="5" stroke-linecap="round"/>
           <circle class="bulb" cx="44" cy="50" r="8" fill="var(--m-in)"/>
-          <path d="M53.75 36.07A17 17 0 0 1 53.75 63.93" fill="none" stroke="var(--m-out)" stroke-width="6" stroke-linecap="round"/>
+          <path class="cup" d="M53.75 36.07A17 17 0 0 1 53.75 63.93" fill="none" stroke="var(--m-out)" stroke-width="6" stroke-linecap="round"/>
           <path d="M61 50H91" fill="none" stroke="var(--m-out)" stroke-width="5" stroke-linecap="round"/>
-          <circle class="msg m1" cx="53.5" cy="44.5" r="2" fill="var(--m-in)"/>
-          <circle class="msg m2" cx="55" cy="50" r="2" fill="var(--m-topo)"/>
-          <circle class="msg m3" cx="53.5" cy="55.5" r="2" fill="var(--m-out)"/>
+          <g transform="rotate(-30 44 50)"><circle class="msg m1" cx="55" cy="50" r="2" fill="var(--m-in)"/></g>
+          <g><circle class="msg m2" cx="55" cy="50" r="2" fill="var(--m-topo)"/></g>
+          <g transform="rotate(30 44 50)"><circle class="msg m3" cx="55" cy="50" r="2" fill="var(--m-out)"/></g>
         </svg>
       </div>
     </div>
@@ -80,16 +79,32 @@
         <div class="spec topology"><b>Topology</b><span>L1 + L2 + LLC</span></div>
         <div class="spec policy"><b>Policy</b><span>inclusive, write-back</span></div>
       </div>
-      <div class="arrow" aria-hidden="true"><span class="pulse"></span></div>
+      <div class="arrow-v" aria-hidden="true"></div>
+      <svg class="wire" viewBox="0 0 120 168" width="120" height="168" aria-hidden="true">
+        <path id="wp" class="w w-p" d="M0 24C52 24 56 84 104 84"/>
+        <path id="wt" class="w w-t" d="M0 84H104"/>
+        <path id="wy" class="w w-y" d="M0 144C52 144 56 84 104 84"/>
+        <path class="head" d="M102 77L116 84L102 91Z"/>
+        <circle class="ball b-p" r="5" opacity="0"><animateMotion dur="3s" repeatCount="indefinite" calcMode="spline" keyPoints="0;0;1;1" keyTimes="0;0.06;0.38;1" keySplines="0 0 1 1;0.45 0 0.25 1;0 0 1 1"><mpath href="#wp"/></animateMotion><animate attributeName="opacity" dur="3s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.08;0.34;0.4;1"/></circle>
+        <circle class="ball b-t" r="5" opacity="0"><animateMotion dur="3s" repeatCount="indefinite" calcMode="spline" keyPoints="0;0;1;1" keyTimes="0;0.06;0.38;1" keySplines="0 0 1 1;0.45 0 0.25 1;0 0 1 1"><mpath href="#wt"/></animateMotion><animate attributeName="opacity" dur="3s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.08;0.34;0.4;1"/></circle>
+        <circle class="ball b-y" r="5" opacity="0"><animateMotion dur="3s" repeatCount="indefinite" calcMode="spline" keyPoints="0;0;1;1" keyTimes="0;0.06;0.38;1" keySplines="0 0 1 1;0.45 0 0.25 1;0 0 1 1"><mpath href="#wy"/></animateMotion><animate attributeName="opacity" dur="3s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.08;0.34;0.4;1"/></circle>
+      </svg>
       <div class="engine">
         <div class="engine-box">
           <img class="only-light" src="assets/img/synapse-mark-dark.svg" alt="" width="44" height="44">
           <img class="only-dark" src="assets/img/synapse-mark.svg" alt="" width="44" height="44">
           Synapse
         </div>
-        <div class="props"><span class="prop">Automatic</span><span class="prop">Verified</span><span class="prop">Performant</span></div>
       </div>
-      <div class="arrow" aria-hidden="true"><span class="pulse"></span></div>
+      <div class="arrow-v" aria-hidden="true"></div>
+      <svg class="wire" viewBox="0 0 120 168" width="120" height="168" aria-hidden="true">
+        <path id="wg" class="w w-g" d="M0 84H18C56 84 60 44 104 44"/>
+        <path id="wc" class="w w-c" d="M18 84C56 84 60 124 104 124"/>
+        <path class="head head-g" d="M102 37L116 44L102 51Z"/>
+        <path class="head head-c" d="M102 117L116 124L102 131Z"/>
+        <circle class="ball b-g" r="5" opacity="0"><animateMotion dur="3s" repeatCount="indefinite" calcMode="spline" keyPoints="0;0;1;1" keyTimes="0;0.5;0.84;1" keySplines="0 0 1 1;0.45 0 0.25 1;0 0 1 1"><mpath href="#wg"/></animateMotion><animate attributeName="opacity" dur="3s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.5;0.53;0.79;0.85;1"/></circle>
+        <circle class="ball b-c" r="5" opacity="0"><animateMotion dur="3s" repeatCount="indefinite" calcMode="spline" keyPoints="0;0;1;1" keyTimes="0;0.5;0.84;1" keySplines="0 0 1 1;0.45 0 0.25 1;0 0 1 1"><mpath href="#wc"/></animateMotion><animate attributeName="opacity" dur="3s" repeatCount="indefinite" values="0;0;0.6;0.6;0;0" keyTimes="0;0.5;0.53;0.79;0.85;1"/></circle>
+      </svg>
       <div class="outs">
         <div class="out done">
           <img class="logo" src="assets/img/gem5.png" alt="gem5 logo" width="40" height="40">
